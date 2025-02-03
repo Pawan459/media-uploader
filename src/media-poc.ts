@@ -1,8 +1,8 @@
-import awsLite from '@aws-lite/client';
-import type { AwsLiteS3 } from '@aws-lite/s3-types';
-import { request } from 'undici';
+import awsLite from "@aws-lite/client";
+import type { AwsLiteS3 } from "@aws-lite/s3-types";
+import { request } from "undici";
 
-import { extname, basename } from 'node:path';
+import { extname, basename } from "node:path";
 
 export interface MediaConfig {
   s3Endpoint: string;
@@ -10,9 +10,9 @@ export interface MediaConfig {
   bucket: string;
   accessKeyId: string;
   secretAccessKey: string;
-  /** 
-   * Minimum file size to switch from single PUT to multipart. 
-   * Typically 5MB or 10MB. 
+  /**
+   * Minimum file size to switch from single PUT to multipart.
+   * Typically 5MB or 10MB.
    */
   multipartThreshold?: number;
   /**
@@ -39,7 +39,7 @@ export class Media {
   constructor(config: MediaConfig) {
     this.bucket = config.bucket;
     this.multipartThreshold = config.multipartThreshold ?? 5 * 1024 * 1024; // default 5MB
-    this.multipartPartSize = config.multipartPartSize ?? 5 * 1024 * 1024;   // default 5MB
+    this.multipartPartSize = config.multipartPartSize ?? 5 * 1024 * 1024; // default 5MB
     this.s3Initialized = this.initializeS3(config);
   }
 
@@ -54,7 +54,7 @@ export class Media {
       accessKeyId: config.accessKeyId,
       secretAccessKey: config.secretAccessKey,
       // @ts-ignore
-      plugins: [import('@aws-lite/s3')],
+      plugins: [import("@aws-lite/s3")],
     });
 
     this.s3 = S3;
@@ -70,23 +70,33 @@ export class Media {
     const { sourceUrl, destinationDir, maxFileSize } = options;
 
     // 1. Try HEAD request for content-length & content-type
-    const { statusCode: headStatus, headers: headHeaders } = await request(sourceUrl, {
-      method: 'HEAD'
-    });
+    const { statusCode: headStatus, headers: headHeaders } = await request(
+      sourceUrl,
+      {
+        method: "HEAD",
+      },
+    );
 
     console.log(`HEAD request status: ${headStatus}`, headHeaders);
 
     if (headStatus < 200 || headStatus >= 300) {
       throw new Error(
-        `Failed HEAD request for URL: ${sourceUrl}, status code: ${headStatus}`
+        `Failed HEAD request for URL: ${sourceUrl}, status code: ${headStatus}`,
       );
     }
 
-    const contentLengthHeader = Array.isArray(headHeaders['content-length']) ? headHeaders['content-length'][0] : headHeaders['content-length'];
-    const contentTypeHeader = (Array.isArray(headHeaders['content-type']) ? headHeaders['content-type'][0] : headHeaders['content-type']) || 'application/octet-stream';
+    const contentLengthHeader = Array.isArray(headHeaders["content-length"])
+      ? headHeaders["content-length"][0]
+      : headHeaders["content-length"];
+    const contentTypeHeader =
+      (Array.isArray(headHeaders["content-type"])
+        ? headHeaders["content-type"][0]
+        : headHeaders["content-type"]) || "application/octet-stream";
 
     // Basic content-length parsing
-    let contentLength = contentLengthHeader ? parseInt(contentLengthHeader, 10) : 0;
+    let contentLength = contentLengthHeader
+      ? parseInt(contentLengthHeader, 10)
+      : 0;
     if (isNaN(contentLength)) contentLength = 0;
 
     // Validate content-type (if needed)
@@ -97,7 +107,7 @@ export class Media {
     // If contentLength is known and exceeds maxFileSize, abort immediately
     if (maxFileSize && contentLength && contentLength > maxFileSize) {
       throw new Error(
-        `File is too large (${contentLength} bytes). Max allowed is ${maxFileSize} bytes.`
+        `File is too large (${contentLength} bytes). Max allowed is ${maxFileSize} bytes.`,
       );
     }
 
@@ -113,8 +123,11 @@ export class Media {
 
     // If we *do* know the content length and it's below the threshold, single PUT is simpler.
     // If we *don't* know the content length or it's >= threshold, fallback to multipart.
-    const shouldDoSinglePut = contentLength > 0 && contentLength < this.multipartThreshold;
-    console.log(`Using ${shouldDoSinglePut ? 'single PUT' : 'multipart'} upload.`);
+    const shouldDoSinglePut =
+      contentLength > 0 && contentLength < this.multipartThreshold;
+    console.log(
+      `Using ${shouldDoSinglePut ? "single PUT" : "multipart"} upload.`,
+    );
 
     if (shouldDoSinglePut) {
       finalKey = await this.uploadSinglePut({
@@ -152,7 +165,7 @@ export class Media {
     const getResponse = await request(sourceUrl);
     if (getResponse.statusCode !== 200) {
       throw new Error(
-        `Failed GET request for URL: ${sourceUrl}, status code: ${getResponse.statusCode}`
+        `Failed GET request for URL: ${sourceUrl}, status code: ${getResponse.statusCode}`,
       );
     }
 
@@ -189,7 +202,7 @@ export class Media {
 
     const uploadId = createResp.UploadId;
     if (!uploadId) {
-      throw new Error('Failed to initiate multipart upload: Missing UploadId');
+      throw new Error("Failed to initiate multipart upload: Missing UploadId");
     }
 
     // 2. Start GET request to remote file
@@ -198,7 +211,7 @@ export class Media {
       // Must abort the upload to avoid leaving incomplete multi-part
       await this.abortMultipart(this.bucket, key, uploadId);
       throw new Error(
-        `Failed GET request for URL: ${sourceUrl}, status code: ${getResponse.statusCode}`
+        `Failed GET request for URL: ${sourceUrl}, status code: ${getResponse.statusCode}`,
       );
     }
 
@@ -220,9 +233,7 @@ export class Media {
 
         // Check against maxFileSize (if specified)
         if (maxFileSize && totalBytesRead > maxFileSize) {
-          throw new Error(
-            `File exceeded maxFileSize of ${maxFileSize} bytes.`
-          );
+          throw new Error(`File exceeded maxFileSize of ${maxFileSize} bytes.`);
         }
 
         // Once buffer >= partSize, upload a part
@@ -233,7 +244,7 @@ export class Media {
             key,
             uploadId,
             currentPartNumber++,
-            partToUpload
+            partToUpload,
           );
           eTags.push({ ETag: etag, PartNumber: currentPartNumber - 1 });
 
@@ -249,7 +260,7 @@ export class Media {
           key,
           uploadId,
           currentPartNumber++,
-          buffer
+          buffer,
         );
         eTags.push({ ETag: etag, PartNumber: currentPartNumber - 1 });
       }
@@ -260,8 +271,8 @@ export class Media {
         Key: key,
         UploadId: uploadId,
         MultipartUpload: {
-          Parts: eTags
-        }
+          Parts: eTags,
+        },
       });
 
       return key;
@@ -280,7 +291,7 @@ export class Media {
     key: string,
     uploadId: string,
     partNumber: number,
-    body: Buffer
+    body: Buffer,
   ): Promise<string> {
     const partResp = await this.s3.UploadPart({
       Bucket: bucket,
@@ -290,15 +301,13 @@ export class Media {
 
     const etag = partResp.ETag;
     if (!etag) {
-      throw new Error(
-        `Failed to upload part #${partNumber} for key: ${key}`
-      );
+      throw new Error(`Failed to upload part #${partNumber} for key: ${key}`);
     }
     return etag;
   }
 
   /**
-   * Abort a multipart upload (cleanup). 
+   * Abort a multipart upload (cleanup).
    * Avoids leaving partial data in your storage.
    */
   private async abortMultipart(bucket: string, key: string, uploadId: string) {
@@ -312,20 +321,25 @@ export class Media {
   /**
    * Build an S3 key from the remote URL + destination directory.
    */
-  private buildS3Key(sourceUrl: string, destinationDir: string, contentType: string): string {
+  private buildS3Key(
+    sourceUrl: string,
+    destinationDir: string,
+    contentType: string,
+  ): string {
     const urlObj = new URL(sourceUrl);
-    const rawFilename = basename(urlObj.pathname || 'file');
-    const fileExt = extname(rawFilename) || this.guessExtensionFromContentType(contentType);
+    const rawFilename = basename(urlObj.pathname || "file");
+    const fileExt =
+      extname(rawFilename) || this.guessExtensionFromContentType(contentType);
 
     const finalFilename = rawFilename
       ? rawFilename
       : `uploaded-file-${Date.now()}${fileExt}`;
 
-    return `${destinationDir.replace(/\/+$/, '')}/${finalFilename}`;
+    return `${destinationDir.replace(/\/+$/, "")}/${finalFilename}`;
   }
 
   /**
-   * Very naive content-type check. 
+   * Very naive content-type check.
    * In production, consider a library like "file-type" for safer detection.
    */
   private isSupportedContentType(contentType: string): boolean {
@@ -337,12 +351,12 @@ export class Media {
    * Guess extension if not found in the URL. This is purely optional.
    */
   private guessExtensionFromContentType(contentType: string): string {
-    if (contentType.startsWith('image/')) {
-      return '.' + contentType.split('/')[1];
+    if (contentType.startsWith("image/")) {
+      return "." + contentType.split("/")[1];
     }
-    if (contentType.startsWith('video/')) {
-      return '.' + contentType.split('/')[1];
+    if (contentType.startsWith("video/")) {
+      return "." + contentType.split("/")[1];
     }
-    return '';
+    return "";
   }
 }

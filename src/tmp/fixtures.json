@@ -1,0 +1,10 @@
+{
+  "text_file": "https://example-files.online-convert.com/document/txt/example.txt",
+  "2mb_image": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?q=80&w=5020&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "4.5mb_image": "https://lh5.googleusercontent.com/p/AF1QipOFTSyL9BJ_pn1-7IrWREOPBqLbVEKbpa20Qhz-=w4000-h3000-k-no",
+  "12mb_image": "https://lh5.googleusercontent.com/p/AF1QipMYMvzR_SykOarILiuGIATB3gwTO2kUuh2JpMag=w6544-h4354-k-no",
+  "20mb_image": "https://sample-videos.com/img/Sample-jpg-image-20mb.jpg",
+  "invalid_image": "https://lh5.googleusercontent.com/p/xDNfLZ-FpZFKZtulRt6vcgRkRTLYQvx0rbgm=w1772-h1181-k-no",
+  "22mb_video": "https://scontent-hel3-1.cdninstagram.com/o1/v/t16/f2/m82/AQMhxTdnQPVpOTpyT-AWYuaK1gMRUuy2AyMUV0N0qoW409XP6GmIFdHely7kjNmPEzE9HdtiNNxdQwnRPccfJSZLa0id4PbErKXEj-k.mp4?stp=dst-mp4&efg=eyJxZV9ncm91cHMiOiJbXCJpZ193ZWJfZGVsaXZlcnlfdnRzX290ZlwiXSIsInZlbmNvZGVfdGFnIjoidnRzX3ZvZF91cmxnZW4uY2xpcHMuYzIuNzIwLmJhc2VsaW5lIn0&_nc_cat=103&vs=1146917149786074_2702839669&_nc_vs=HBksFQIYT2lnX3hwdl9yZWVsc19wZXJtYW5lbnRfcHJvZC83QzQ5M0VFQUE5MjJFQjU2OEI3MjJDMjFFRUQ5N0VBOF92aWRlb19kYXNoaW5pdC5tcDQVAALIAQAVAhg6cGFzc3Rocm91Z2hfZXZlcnN0b3JlL0dKLUxraG81NXhXU01hVUJBR0xUNGZlRlFna2licV9FQUFBRhUCAsgBACgAGAAbABUAACagivfe1eeLQBUCKAJDMywXQE9qn752yLQYEmRhc2hfYmFzZWxpbmVfMV92MREAdf4HAA%3D%3D&_nc_rid=40a24ff4cf&ccb=9-4&oh=00_AYAbtql10wEISJX6kOfAbAlUPJFggofZEiTSuCqTmPRy6Q&oe=67945B96&_nc_sid=d885a2",
+  "150mb_video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+}
