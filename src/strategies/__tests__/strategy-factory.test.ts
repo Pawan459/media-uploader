@@ -3,8 +3,8 @@ import { MultipartStrategy } from "@app/strategies/multipart.strategy";
 import { SinglePutStrategy } from "@app/strategies/single-put.strategy";
 import { UploaderStrategyFactory } from "@app/strategies";
 
-describe('UploaderStrategyFactory', () => {
-  it('returns SinglePutStrategy if contentLength < threshold', () => {
+describe("UploaderStrategyFactory", () => {
+  it("returns SinglePutStrategy if contentLength < threshold", () => {
     const strategy = UploaderStrategyFactory.createStrategy({
       contentLength: 4_000_000,
       maxFileSize: 10_000_000,
@@ -15,7 +15,7 @@ describe('UploaderStrategyFactory', () => {
     expect(strategy).toBeInstanceOf(SinglePutStrategy);
   });
 
-  it('returns MultipartStrategy if contentLength == threshold', () => {
+  it("returns MultipartStrategy if contentLength == threshold", () => {
     const strategy = UploaderStrategyFactory.createStrategy({
       contentLength: 5_000_000,
       maxFileSize: 10_000_000,
@@ -26,7 +26,7 @@ describe('UploaderStrategyFactory', () => {
     expect(strategy).toBeInstanceOf(MultipartStrategy);
   });
 
-  it('returns MultipartStrategy if contentLength > threshold', () => {
+  it("returns MultipartStrategy if contentLength > threshold", () => {
     const strategy = UploaderStrategyFactory.createStrategy({
       contentLength: 6_000_000,
       maxFileSize: 10_000_000,
@@ -37,7 +37,7 @@ describe('UploaderStrategyFactory', () => {
     expect(strategy).toBeInstanceOf(MultipartStrategy);
   });
 
-  it('returns MultipartStrategy if contentLength = 0 (unknown)', () => {
+  it("returns MultipartStrategy if contentLength = 0 (unknown)", () => {
     const strategy = UploaderStrategyFactory.createStrategy({
       contentLength: 0,
       maxFileSize: 10_000_000,

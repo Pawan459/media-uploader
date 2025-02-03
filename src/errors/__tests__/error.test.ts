@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { FileTooLargeError, RemoteServerError, UnsupportedContentTypeError } from "@app/errors";
-
+import {
+  FileTooLargeError,
+  RemoteServerError,
+  UnsupportedContentTypeError,
+} from "@app/errors";
 
 describe("Custom Error Classes", () => {
   it("FileTooLargeError should have correct name and message", () => {
